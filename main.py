@@ -3,6 +3,8 @@ import re
 from eng_to_ipa import convert
 from discord.ext import commands
 
+from impostor import send_message_as_user
+
 
 command_prefix = '!'
 bot = commands.Bot(command_prefix=command_prefix)
@@ -41,7 +43,8 @@ def ipa_to_kersd(text):
 
 @bot.command(name='ipa2kersd')  # ipa to kersd
 async def ipa2kersd(ctx, *, arg1=None):
-    await ctx.send(ipa_to_kersd(arg1))
+    output = (ipa_to_kersd(arg1))
+    await send_message_as_user(ctx.author,output,ctx.message)
 
 def kersd_to_ipa(text):
     output = ""
@@ -56,16 +59,18 @@ def kersd_to_ipa(text):
 
 @bot.command(name='kersd2ipa')  # kersd to ipa
 async def kersd2ipa(ctx, *, arg1=None):
-    await ctx.send(kersd_to_ipa(arg1))
+    output = (kersd_to_ipa(arg1))
+    await send_message_as_user(ctx.author,output,ctx.message)
 
 @bot.command(name='eng2ipa') # english to ipa
 async def eng2ipa(ctx, *, arg1=None):
-    await ctx.send(convert(arg1))
+    output = (convert(arg1))
+    await send_message_as_user(ctx.author,output,ctx.message)
 
 @bot.command(name='eng2kersd') # english to kersd
 async def eng2kersd(ctx, *, arg1=None):
-    await ctx.send(ipa_to_kersd(convert(arg1)))
-
+    output = ipa_to_kersd(convert(arg1))
+    await send_message_as_user(ctx.author,output,ctx.message)
 
 @bot.command(name='vowelnt')  # english to vowelnt
 async def vowelnt(ctx, *, arg1=None):
@@ -75,7 +80,7 @@ async def vowelnt(ctx, *, arg1=None):
             if not re.match('[aeiouAEIOU]', j):
                 output += j
         output += " "
-    await ctx.send(output)
+    await send_message_as_user(ctx.author,output,ctx.message)
 
 @bot.command(name="help")
 async def help(ctx):
@@ -86,5 +91,9 @@ async def help(ctx):
 async def ping(ctx):
     await ctx.send('pong')
 '''
+
+@bot.command(name="webhooktest")
+async def webhooktest(ctx):
+    await send_message_as_user(ctx.author,"Hello World!",ctx.message)
 
 bot.run(open("api.key","r").read())
