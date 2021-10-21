@@ -117,7 +117,8 @@ def cmu_to_ipa(cmu_list, mark=True, stress_marking='all'):
 
                 if mark:
                     if not re.sub("\d*", "", ipa_form) == "":
-                        ipa_form += "*"
+                        ipa_form += "__"
+                        ipa_form="__"+ipa_form
             else:
                 for piece in word.split(" "):
                     marked = False
