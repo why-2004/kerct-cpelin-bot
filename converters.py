@@ -14,7 +14,7 @@ ipa = {'m': 'm', 'n': 'n', 'ŋ': 'ñ', 'p': 'p', 't': 't', 'ʧ': 'q', 'k': 'k', 
        'f': 'f', 'θ': 'č', 's': 'c', 'ʃ': 's', 'h': 'h', 'v': 'v', 'ð': 'ž', 'z': 'z', 'ʒ': 'x', 'l': 'l', 'r': 'r',
        'j': 'y', 'w': 'w', 'a': 'a', 'æ': 'ä', 'ə': 'e', 'ɛ': 'ë', 'ɜ': 'ē', 'ɒ': 'o', 'ɪ': 'i', 'i': 'ī', 'ʊ': 'u',
        'u': 'ū', 'ö': 'ö', 'ː': '', 'ˈ': '', 'ˌ': '', '.': '', 'ɹ': 'r', 'ɚ': 'e',
-       'ʌ': 'a', 'ɑ': 'a', 'ɔ': 'o', 'e': 'ë', 'x': 'h'}  # must replace "ˈəʊ" with ö
+       'ʌ': 'a', 'ɑ': 'a', 'ɔ': 'o', 'e': 'ë', 'x': 'h', 'ʍ': 'hw'}  # must replace "ˈəʊ" with ö
 
 
 def ipa_to_kerct(text):
@@ -80,12 +80,12 @@ def word_to_ipa(word, language):
     parser.set_default_language(language)
     word = parser.fetch(word)
     if word:
-        #print(word[0]['pronunciations']['text'])
+        # print(word[0]['pronunciations']['text'])
         for j in word[0]['pronunciations']['text']:
             # match=re.search("^((?![(]US[)] IPA: ).)*[/][^/]+/", j)
             match = re.search("[/][^/]+/", j)
             if match:
-                return match[0][1:-1].replace(" ","")
+                return match[0][1:-1].replace(" ", "")
     return ""
 
 
