@@ -13,15 +13,15 @@ kerct = {'m': 'm', 'n': 'n', 'ñ': 'ŋ', 'p': 'p', 't': 't', 'q': 'ʧ', 'k': 'k'
 ipa = {'m': 'm', 'n': 'n', 'ŋ': 'ñ', 'p': 'p', 't': 't', 'ʧ': 'q', 'k': 'k', 'b': 'b', 'd': 'd', 'ʤ': 'j', 'g': 'g',
        'f': 'f', 'θ': 'č', 's': 'c', 'ʃ': 's', 'h': 'h', 'v': 'v', 'ð': 'ž', 'z': 'z', 'ʒ': 'x', 'l': 'l', 'r': 'r',
        'j': 'y', 'w': 'w', 'a': 'a', 'æ': 'ä', 'ə': 'e', 'ɛ': 'ë', 'ɜ': 'ē', 'ɒ': 'o', 'ɪ': 'i', 'i': 'ī', 'ʊ': 'u',
-       'u': 'ū', 'ö': 'ö', 'ː': '', 'ˈ': '', 'ˌ': '', '.': ''}  # must replace "ˈəʊ" with ö
+       'u': 'ū', 'ö': 'ö', 'ː': '', 'ˈ': '', 'ˌ': '', '.': '', 'ɹ': 'r', 'ɚ': 'e', 'ʌ': 'ä'}  # must replace "ˈəʊ" with ö
 
 
 def ipa_to_kerct(text):
     output = ""
     arg = re.sub("ˈəʊ", 'ö', text)
-    arg = re.sub("[(][^)]+[)]","",arg)
-    arg=re.sub("t͡ʃ","ʧ",arg)
-    arg=re.sub("d͡ʒ","ʤ",arg)
+    arg = re.sub("[(][^)]+[)]", "", arg)
+    arg = re.sub("t͡ʃ", "ʧ", arg)
+    arg = re.sub("d͡ʒ", "ʤ", arg)
     for i in arg.split(" "):
         for j in i:
             if j in ipa:
@@ -45,8 +45,10 @@ def kerct_to_ipa(text):
 
 
 def eng_to_ipa(text):
+    '''
     if len(text.split(" "))>10:
         return convert_to_ipa(text)
+    '''
     output = ""
     for i in text.split(" "):
         word = word_to_ipa(i, 'english')
@@ -64,6 +66,7 @@ def word_to_ipa(word, language):
     parser.set_default_language(language)
     word = parser.fetch(word)
     if word:
+        print(word[0]['pronunciations']['text'])
         for j in word[0]['pronunciations']['text']:
             # match=re.search("^((?![(]US[)] IPA: ).)*[/][^/]+/", j)
             match = re.search("[/][^/]+/", j)

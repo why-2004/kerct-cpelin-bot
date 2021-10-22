@@ -1,0 +1,3 @@
+wiktionaryparser
+dragonmapper
+py-cord
