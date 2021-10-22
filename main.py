@@ -6,7 +6,7 @@ from discord.ext import commands
 import settings
 from converters import *
 
-from impostor import *
+from messages import *
 
 from settings import webhooks_set
 from settings import delete_set

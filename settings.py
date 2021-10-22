@@ -1,7 +1,7 @@
 import ast
 
-import impostor
-from impostor import send_message
+import messages
+from messages import send_message
 
 webhooks = False
 delete_og_message = False
@@ -10,19 +10,23 @@ command_prefix = '!'
 
 def update_settings_from_file():
     global webhooks, delete_og_message, command_prefix
-    with open('settings.txt', 'r') as f: setdict = ast.literal_eval(f.read())
-    webhooks = setdict['webhooks']
-    delete_og_message = setdict['delete']
-    command_prefix = setdict['prefix']
-    impostor.delete_og_message = delete_og_message
-    impostor.webhooks = webhooks
+    try:
+        with open('settings.kerct', 'r') as f:
+            setdict = ast.literal_eval(f.read())
+        webhooks = setdict['webhooks']
+        delete_og_message = setdict['delete']
+        command_prefix = setdict['prefix']
+        messages.delete_og_message = delete_og_message
+        messages.webhooks = webhooks
+    except:
+        update_settings_to_file()
 
 
 def update_settings_to_file():
     setdict = {'webhooks': webhooks, 'delete': delete_og_message, 'prefix': command_prefix}
-    with open('settings.txt', 'w') as f: f.write(repr(setdict))
-    impostor.delete_og_message = delete_og_message
-    impostor.webhooks = webhooks
+    with open('settings.kerct', 'w') as f: f.write(repr(setdict))
+    messages.delete_og_message = delete_og_message
+    messages.webhooks = webhooks
 
 
 def webhooks_set(setting=None):

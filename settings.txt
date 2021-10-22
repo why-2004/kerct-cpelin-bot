@@ -1,1 +1,0 @@
-{'webhooks': True, 'delete': True, 'prefix': '!'}
