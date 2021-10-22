@@ -10,4 +10,4 @@ _(A stupid bot that makes cursed phonetic spelling.)_
 
 - meik cëtiñz cēve indipëndent
 - faind ei fäcte wei ti dū lukepc žän wiksenrī
-- fikc bäɡz in ai-pī-ei tränckripsen
+- fikc baɡz in ai pī ei tränckripsen

@@ -56,6 +56,11 @@ async def eng2ipa(ctx, *, arg1=""):
     await send_message(ctx, output, arg1)
 
 
+@bot.command(name="lang2ipa")
+async def lang2ipa(ctx, *, arg1="", arg2=""):
+    output=lang_to_ipa(arg2,arg1)
+    await send_message(ctx, output, arg1)
+
 @bot.command(name='eng2kerct')  # english to kerct
 async def eng2kerct(ctx, *, arg1=""):
     output = eng_to_kerct(arg1)
@@ -138,6 +143,7 @@ async def prefix(ctx, *, arg1=""):
         bot.command_prefix = arg1
         command_prefix = arg1
     await ctx.send(o)
+
 
 
 bot.run(open("api.key", "r").read())
