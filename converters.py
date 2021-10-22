@@ -45,7 +45,7 @@ def kerct_to_ipa(text):
 
 
 def eng_to_ipa(text):
-    if len(text)>20:
+    if len(text.split(" "))>10:
         return convert_to_ipa(text)
     output = ""
     for i in text.split(" "):
