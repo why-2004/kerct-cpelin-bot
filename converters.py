@@ -24,6 +24,7 @@ def ipa_to_kerct(text):
     arg = re.sub("t͡ʃ", "ʧ", arg)
     arg = re.sub("tʃ", "ʧ", arg)
     arg = re.sub("d͡ʒ", "ʤ", arg)
+    arg = re.sub("dʒ", "ʤ", arg)
     for i in arg.split(" "):
         for j in i:
             if j in ipa:
