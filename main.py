@@ -3,6 +3,7 @@ import re
 
 from discord.ext import commands
 
+import converters
 import settings
 from converters import *
 
@@ -16,6 +17,7 @@ intents = discord.Intents.default()
 intents.members = True
 
 settings.update_settings_from_file()
+converters.update_dict_from_file()
 command_prefix = settings.command_prefix
 
 bot = commands.Bot(command_prefix=command_prefix, intents=intents)
@@ -54,6 +56,7 @@ async def kerct2ipa(ctx, *, arg1=""):
 async def eng2ipa(ctx, *, arg1=""):
     output = (eng_to_ipa(arg1))
     await send_message(ctx, output, arg1)
+    converters.update_dict_to_file()
 
 
 @bot.command(name="lang2ipa")
@@ -65,6 +68,7 @@ async def lang2ipa(ctx, *, arg1="", arg2=""):
 async def eng2kerct(ctx, *, arg1=""):
     output = eng_to_kerct(arg1)
     await send_message(ctx, output, arg1)
+    converters.update_dict_to_file()
 
 
 @bot.command(name='vowelnt')  # english to vowelnt

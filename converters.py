@@ -1,4 +1,4 @@
-import re
+import re, ast
 
 from dragonmapper import hanzi
 
@@ -6,15 +6,20 @@ from wiktionaryparser import WiktionaryParser
 
 from eng_to_ipa import jonvert as convert_to_ipa
 
+import time
+
 kerct = {'m': 'm', 'n': 'n', 'ñ': 'ŋ', 'p': 'p', 't': 't', 'q': 'ʧ', 'k': 'k', 'b': 'b', 'd': 'd', 'j': 'ʤ', 'g': 'g',
          'f': 'f', 'č': 'θ', 'c': 's', 's': 'ʃ', 'h': 'h', 'v': 'v', 'ž': 'ð', 'z': 'z', 'x': 'ʒ', 'l': 'l', 'r': 'r',
          'y': 'j', 'w': 'w', 'a': 'a', 'ä': 'æ', 'e': 'ə', 'ë': 'ɛ', 'ē': 'ɜː', 'o': 'ɒ', 'i': 'ɪ', 'ī': 'iː',
          'u': 'ʊ', 'ū': 'uː', 'ö': 'ˈəʊ'}
 ipa = {'m': 'm', 'n': 'n', 'ŋ': 'ñ', 'p': 'p', 't': 't', 'ʧ': 'q', 'k': 'k', 'b': 'b', 'd': 'd', 'ʤ': 'j', 'g': 'g',
-       'f': 'f', 'θ': 'č', 's': 'c', 'ʃ': 's', 'h': 'h', 'v': 'v', 'ð': 'ž', 'z': 'z', 'ʒ': 'x', 'l': 'l', 'r': 'r',
+       'f': 'f', 'θ': 'č', 'h': 'h', 'v': 'v', 'ð': 'ž', 'z': 'z', 'ʒ': 'x', 'l': 'l', 'r': 'r',
        'j': 'y', 'w': 'w', 'a': 'a', 'æ': 'ä', 'ə': 'e', 'ɛ': 'ë', 'ɜ': 'ē', 'ɒ': 'o', 'ɪ': 'i', 'i': 'ī', 'ʊ': 'u',
-       'u': 'ū', 'ö': 'ö', 'ː': '', 'ˈ': '', 'ˌ': '', '.': '', 'ɹ': 'r', 'ɚ': 'e', 'ʌ': 'a', 'ɑ': 'a', 'ɔ': 'o',
-       'e': 'ë', 'x': 'h', 'ʍ': 'hw', "ʉ": "", "̯": ""}  # must replace "ˈəʊ" with ö
+       'u': 'ū', 'ö': 'ö', 'ː': '', 'ˈ': '', 'ˌ': '', 'ɹ': 'r', 'ɚ': 'e', 'ʌ': 'a', 'ɑ': 'a', 'ɔ': 'o',
+       'e': 'ë', 'x': 'h', 'ʍ': 'hw', "ʉ": "", "̯": "", 'ɡ': 'g', '.': '', 'ɝ':'er'
+       , 's': 'c', 'ʃ': 's'  # old kerct, i.e. s represents sh and c represents s
+       #, 's': 's', 'ʃ': 'c'  # new kerst, i.e. c represents sh and s represents s
+       }  # must replace "ˈəʊ" with ö
 
 
 def ipa_to_kerct(text):
@@ -26,11 +31,21 @@ def ipa_to_kerct(text):
     arg = re.sub("d͡ʒ", "ʤ", arg)
     arg = re.sub("dʒ", "ʤ", arg)
     for i in arg.split(" "):
-        for j in i:
+        word = re.findall(r'[^,;:"\'!@#$%^&*()\-=_+<>?\[\]{}\\|~`“”\n]+', i)
+        if len(word) > 0:
+            word = word[0]
+        else:
+            output += i + " "
+            continue
+        puncs = re.split(r'[^.,;:"\'!@#$%^&*()\-=_+<>?\[\]{}\\|~`“”\n]+', i)
+        output += puncs[0]
+        print(puncs[0]+word+puncs[-1])
+        for j in word:
             if j in ipa:
                 output += ipa[j]
             else:
                 output += j
+        output += puncs[-1]
         output += " "
     return output
 
@@ -47,29 +62,80 @@ def kerct_to_ipa(text):
     return output
 
 
+eng2ipa_shortcut_dict = {'a': 'eɪ'}
+
+
+def update_dict_from_file():
+    global eng2ipa_shortcut_dict
+    try:
+        with open('dictionary.kerct', 'r', encoding='utf-8') as f:
+            eng2ipa_shortcut_dict = ast.literal_eval(f.read())
+    except:
+        update_dict_to_file()
+
+
+def update_dict_to_file():
+    global eng2ipa_shortcut_dict
+    with open('dictionary.kerct', 'w', encoding='utf-8') as f: f.write(repr(eng2ipa_shortcut_dict))
+
+
 def eng_to_ipa(text):
+    '''
     if len(text.split(" ")) > 20:
         return convert_to_ipa(text)
-
+    '''
     output = ""
     for i in text.split(" "):
-        word = word_to_ipa(i, 'english')
-        if word == "":
-            output += convert_to_ipa(i)
+        j = re.findall(r'[\w\'’]+', i)
+        if len(j) > 0:
+            j = j[0]
         else:
-            output += word
+            output += i + " "
+            continue
+        puncs = re.split(r'[\w\'’]+', i)
+        j = j.lower()
+        if j in eng2ipa_shortcut_dict and eng2ipa_shortcut_dict[j]!='':
+            output += puncs[0] + eng2ipa_shortcut_dict[j] + puncs[-1] + " "
+            continue
+        t = time.time()
+        word = word_to_ipa(j, 'english')
+        t = time.time() - t
+        print(t)
+        print(word)
+        if word == "":
+            k=convert_to_ipa(j)
+            if k!="" and k[0]!="_":
+                eng2ipa_shortcut_dict[j] = k
+                output += puncs[0] + k + puncs[-1]
+        else:
+            eng2ipa_shortcut_dict[j] = word
+            output += puncs[0] + word + puncs[-1]
         output += " "
     return output[:-1]
+
+
+'''
+def eng_to_ipa(text):
+    return lang_to_ipa(text, 'english')
+'''
 
 
 def lang_to_ipa(text, language):
     output = ""
     for i in text.split(" "):
-        word = word_to_ipa(i, language)
-        if word == "":
-            output += "__" + i + "__"
+        word = re.findall(r'[\w\'-^\n]+', i)
+        if len(word) > 0:
+            word = word[0]
         else:
-            output += word
+            output += " " + i
+            continue
+        puncs = re.split(r'[\w\'-^\n]+', i)
+        word = word_to_ipa(word, language)
+        print(word)
+        if word == "":
+            output += puncs[0] + "__" + i + "__" + puncs[-1]
+        else:
+            output += puncs[0] + word + puncs[-1]
         output += " "
     return output[:-1]
 
@@ -80,7 +146,8 @@ def word_to_ipa(word, language):
     parser.set_default_language(language)
     word = parser.fetch(word)
     if word:
-        # print(word[0]['pronunciations']['text'])
+        # print(word)
+        print(word[0]['pronunciations']['text'])
         for j in word[0]['pronunciations']['text']:
             # match=re.search("^((?![(]US[)] IPA: ).)*[/][^/]+/", j)
             match = re.search("[/][^/]+/", j)
