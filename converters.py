@@ -39,7 +39,9 @@ def kerct_to_kerst(text):
 def ipa_to_kerst(text):
     output = ""
     arg = re.sub("ˈəʊ", 'ö', text)
-    arg = re.sub("[(].[)]", "", arg)
+    #arg = re.sub("[(].[)]", "", arg)
+    arg = re.sub("(?<=[\w])[(](?=[\w])","",arg)
+    arg = re.sub("(?<=[\w])[)](?=[\w])", "", arg)
     arg = re.sub("t͡ʃ", "ʧ", arg)
     arg = re.sub("tʃ", "ʧ", arg)
     arg = re.sub("d͡ʒ", "ʤ", arg)
