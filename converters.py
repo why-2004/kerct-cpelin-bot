@@ -8,24 +8,38 @@ from eng_to_ipa import jonvert as convert_to_ipa
 
 import time
 
-kerct = {'m': 'm', 'n': 'n', 'ñ': 'ŋ', 'p': 'p', 't': 't', 'q': 'ʧ', 'k': 'k', 'b': 'b', 'd': 'd', 'j': 'ʤ', 'g': 'g',
+kerst = {'m': 'm', 'n': 'n', 'ñ': 'ŋ', 'p': 'p', 't': 't', 'q': 'ʧ', 'k': 'k', 'b': 'b', 'd': 'd', 'j': 'ʤ', 'g': 'g',
          'f': 'f', 'č': 'θ', 'c': 's', 's': 'ʃ', 'h': 'h', 'v': 'v', 'ž': 'ð', 'z': 'z', 'x': 'ʒ', 'l': 'l', 'r': 'r',
          'y': 'j', 'w': 'w', 'a': 'a', 'ä': 'æ', 'e': 'ə', 'ë': 'ɛ', 'ē': 'ɜː', 'o': 'ɒ', 'i': 'ɪ', 'ī': 'iː',
          'u': 'ʊ', 'ū': 'uː', 'ö': 'ˈəʊ'}
 ipa = {'m': 'm', 'n': 'n', 'ŋ': 'ñ', 'p': 'p', 't': 't', 'ʧ': 'q', 'k': 'k', 'b': 'b', 'd': 'd', 'ʤ': 'j', 'g': 'g',
-       'f': 'f', 'θ': 'č', 'h': 'h', 'v': 'v', 'ð': 'ž', 'z': 'z', 'ʒ': 'x', 'l': 'l', 'r': 'r',
+       'f': 'f', 'h': 'h', 'v': 'v', 'ð': 'ž', 'z': 'z', 'ʒ': 'x', 'l': 'l', 'r': 'r',
        'j': 'y', 'w': 'w', 'a': 'a', 'æ': 'ä', 'ə': 'e', 'ɛ': 'ë', 'ɜ': 'ē', 'ɒ': 'o', 'ɪ': 'i', 'i': 'ī', 'ʊ': 'u',
        'u': 'ū', 'ö': 'ö', 'ː': '', 'ˈ': '', 'ˌ': '', 'ɹ': 'r', 'ɚ': 'e', 'ʌ': 'a', 'ɑ': 'a', 'ɔ': 'o',
        'e': 'ë', 'x': 'h', 'ʍ': 'hw', "ʉ": "", "̯": "", 'ɡ': 'g', '.': '', 'ɝ': 'er'
-    , 's': 'c', 'ʃ': 's'  # old kerct, i.e. s represents sh and c represents s
-       # , 's': 's', 'ʃ': 'c'  # new kerst, i.e. c represents sh and s represents s
+       # , 's': 'c', 'ʃ': 's', 'θ': 'č'  # old kerct, i.e. s represents sh and c represents s
+    , 's': 's', 'ʃ': 'š', 'θ': 'c'  # new kerst, i.e. c represents sh and s represents s
        }  # must replace "ˈəʊ" with ö
 
 
-def ipa_to_kerct(text):
+def kerst_to_kerct(text):
+    text = re.sub('c', 'č', text)
+    text = re.sub('s', 'c', text)
+    text = re.sub('š', 's', text)
+    return text
+
+
+def kerct_to_kerst(text):
+    text = re.sub('s', 'š', text)
+    text = re.sub('c', 's', text)
+    text = re.sub('č', 'c', text)
+    return text
+
+
+def ipa_to_kerst(text):
     output = ""
     arg = re.sub("ˈəʊ", 'ö', text)
-    arg = re.sub("[(][^)]+[)]", "", arg)
+    arg = re.sub("[(].[)]", "", arg)
     arg = re.sub("t͡ʃ", "ʧ", arg)
     arg = re.sub("tʃ", "ʧ", arg)
     arg = re.sub("d͡ʒ", "ʤ", arg)
@@ -52,16 +66,24 @@ def ipa_to_kerct(text):
     return output
 
 
-def kerct_to_ipa(text):
+def ipa_to_kerct(text):
+    return kerst_to_kerct(ipa_to_kerst(text))
+
+
+def kerst_to_ipa(text):
     output = ""
     for i in text.split(" "):
         for j in i:
-            if j in kerct:
-                output += kerct[j]
+            if j in kerst:
+                output += kerst[j]
             else:
                 output += j
         output += " "
     return output
+
+
+def kerct_to_ipa(text):
+    return kerst_to_ipa(kerct_to_kerst(text))
 
 
 eng2ipa_shortcut_dict = {'a': 'eɪ'}
@@ -70,7 +92,7 @@ eng2ipa_shortcut_dict = {'a': 'eɪ'}
 def update_dict_from_file():
     global eng2ipa_shortcut_dict
     try:
-        with open('dictionary.kerct', 'r', encoding='utf-8') as f:
+        with open('dictionary.kerst', 'r', encoding='utf-8') as f:
             eng2ipa_shortcut_dict = ast.literal_eval(f.read())
     except:
         update_dict_to_file()
@@ -78,7 +100,7 @@ def update_dict_from_file():
 
 def update_dict_to_file():
     global eng2ipa_shortcut_dict
-    with open('dictionary.kerct', 'w', encoding='utf-8') as f: f.write(repr(eng2ipa_shortcut_dict))
+    with open('dictionary.kerst', 'w', encoding='utf-8') as f: f.write(repr(eng2ipa_shortcut_dict))
 
 
 def eng_to_ipa(text):
@@ -100,6 +122,7 @@ def eng_to_ipa(text):
         j = j.lower()
         if j in eng2ipa_shortcut_dict and eng2ipa_shortcut_dict[j] != '':
             output += puncs[0] + eng2ipa_shortcut_dict[j] + puncs[-1] + " "
+            print(i+' '+output)
             continue
         t = time.time()
         word = word_to_ipa(j, 'english')
@@ -115,13 +138,12 @@ def eng_to_ipa(text):
             eng2ipa_shortcut_dict[j] = word
             output += puncs[0] + word + puncs[-1]
         output += " "
+        print(i + ' ' + output)
+    print(output)
     return output[:-1]
 
 
-'''
-def eng_to_ipa(text):
-    return lang_to_ipa(text, 'english')
-'''
+
 
 
 def lang_to_ipa(text, language):
@@ -160,8 +182,12 @@ def word_to_ipa(word, language):
     return ""
 
 
+def eng_to_kerst(text):
+    return ipa_to_kerst(eng_to_ipa(text))
+
+
 def eng_to_kerct(text):
-    return ipa_to_kerct(eng_to_ipa(text))
+    return kerst_to_kerct(eng_to_kerst(text))
 
 
 def remove_vowels(text):

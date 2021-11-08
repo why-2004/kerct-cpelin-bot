@@ -25,10 +25,10 @@ bot.remove_command("help")
 
 helptext = '''Commands available:
 
-eng2kerct: english to kerct spëliñ
+eng2kerst: english to kerst spëliñ
 eng2ipa: english to IPA
-kerct2ipa: kerct spëliñ to IPA
-ipa2kerct: IPA to kerct spëliñ
+kerst2ipa: kerst spëliñ to IPA
+ipa2kerst: IPA to kerst spëliñ
 vowelnt: english to english (without vowels)
 chi2ipa: chinese to IPA
 help: this
@@ -40,11 +40,21 @@ trueregex = "(True)|(T)|(t)|(true)|(on)|(enable)|(On)|(Enable)|(1)"
 falseregex = "(False)|(F)|(f)|(false)|(off)|(disable)|(off)|(Disable)|(0)"
 
 
+@bot.command(name='ipa2kerst')  # ipa to kerst
+async def ipa2kerst(ctx, *, arg1=""):
+    output = (ipa_to_kerst(arg1))
+    await send_message(ctx, output, arg1)
+
 @bot.command(name='ipa2kerct')  # ipa to kerct
 async def ipa2kerct(ctx, *, arg1=""):
     output = (ipa_to_kerct(arg1))
     await send_message(ctx, output, arg1)
 
+
+@bot.command(name='kerst2ipa')  # kerst to ipa
+async def kerst2ipa(ctx, *, arg1=""):
+    output = (kerst_to_ipa(arg1))
+    await send_message(ctx, output, arg1)
 
 @bot.command(name='kerct2ipa')  # kerct to ipa
 async def kerct2ipa(ctx, *, arg1=""):
@@ -63,6 +73,12 @@ async def eng2ipa(ctx, *, arg1=""):
 async def lang2ipa(ctx, *, arg1="", arg2=""):
     output=lang_to_ipa(arg2,arg1)
     await send_message(ctx, output, arg1)
+
+@bot.command(name='eng2kerst')  # english to kerst
+async def eng2kerst(ctx, *, arg1=""):
+    output = eng_to_kerst(arg1)
+    await send_message(ctx, output, arg1)
+    converters.update_dict_to_file()
 
 @bot.command(name='eng2kerct')  # english to kerct
 async def eng2kerct(ctx, *, arg1=""):
@@ -84,11 +100,11 @@ async def help(ctx):
 
 
 @bot.command(name="hëlp")
-async def kercthelp(ctx):
+async def kersthelp(ctx):
     print("hëlp")
     output = ""
     for i in helptext.split("\n"):
-        output += eng_to_kerct(i)
+        output += eng_to_kerst(i)
         output += "\n"
     await ctx.send(output[:-1])
 

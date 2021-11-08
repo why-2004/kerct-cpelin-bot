@@ -11,7 +11,7 @@ command_prefix = '!'
 def update_settings_from_file():
     global webhooks, delete_og_message, command_prefix
     try:
-        with open('settings.kerct', 'r') as f:
+        with open('settings.kerst', 'r') as f:
             setdict = ast.literal_eval(f.read())
         webhooks = setdict['webhooks']
         delete_og_message = setdict['delete']
@@ -24,7 +24,7 @@ def update_settings_from_file():
 
 def update_settings_to_file():
     setdict = {'webhooks': webhooks, 'delete': delete_og_message, 'prefix': command_prefix}
-    with open('settings.kerct', 'w') as f: f.write(repr(setdict))
+    with open('settings.kerst', 'w') as f: f.write(repr(setdict))
     messages.delete_og_message = delete_og_message
     messages.webhooks = webhooks
 

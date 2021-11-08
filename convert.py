@@ -13,7 +13,7 @@ infile = open('input.md', 'r', encoding='utf8')
 outfile = open('output.md', 'w', encoding='utf8')
 try:
     for i in infile.readlines():
-        j = converters.eng_to_kerct(i)
+        j = converters.eng_to_kerst(i)
         #j=converters.eng_to_ipa(i)
         print(j)
         outfile.write(j + "\n")
