@@ -16,9 +16,9 @@ ipa = {'m': 'm', 'n': 'n', 'ŋ': 'ñ', 'p': 'p', 't': 't', 'ʧ': 'q', 'k': 'k', 
        'f': 'f', 'θ': 'č', 'h': 'h', 'v': 'v', 'ð': 'ž', 'z': 'z', 'ʒ': 'x', 'l': 'l', 'r': 'r',
        'j': 'y', 'w': 'w', 'a': 'a', 'æ': 'ä', 'ə': 'e', 'ɛ': 'ë', 'ɜ': 'ē', 'ɒ': 'o', 'ɪ': 'i', 'i': 'ī', 'ʊ': 'u',
        'u': 'ū', 'ö': 'ö', 'ː': '', 'ˈ': '', 'ˌ': '', 'ɹ': 'r', 'ɚ': 'e', 'ʌ': 'a', 'ɑ': 'a', 'ɔ': 'o',
-       'e': 'ë', 'x': 'h', 'ʍ': 'hw', "ʉ": "", "̯": "", 'ɡ': 'g', '.': '', 'ɝ':'er'
-       , 's': 'c', 'ʃ': 's'  # old kerct, i.e. s represents sh and c represents s
-       #, 's': 's', 'ʃ': 'c'  # new kerst, i.e. c represents sh and s represents s
+       'e': 'ë', 'x': 'h', 'ʍ': 'hw', "ʉ": "", "̯": "", 'ɡ': 'g', '.': '', 'ɝ': 'er'
+    , 's': 'c', 'ʃ': 's'  # old kerct, i.e. s represents sh and c represents s
+       # , 's': 's', 'ʃ': 'c'  # new kerst, i.e. c represents sh and s represents s
        }  # must replace "ˈəʊ" with ö
 
 
@@ -30,16 +30,17 @@ def ipa_to_kerct(text):
     arg = re.sub("tʃ", "ʧ", arg)
     arg = re.sub("d͡ʒ", "ʤ", arg)
     arg = re.sub("dʒ", "ʤ", arg)
+    arg = re.sub("[.] ", "․ ", arg)
     for i in arg.split(" "):
-        word = re.findall(r'[^,;:"\'!@#$%^&*()\-=_+<>?\[\]{}\\|~`“”\n]+', i)
+        word = re.findall(r'[^,;:"\'!@#$%^&*()—\-=_+<>?\[\]{}\\|~`“”\n]+', i)
         if len(word) > 0:
             word = word[0]
         else:
             output += i + " "
             continue
-        puncs = re.split(r'[^.,;:"\'!@#$%^&*()\-=_+<>?\[\]{}\\|~`“”\n]+', i)
+        puncs = re.split(r'[^.,;:"\'!@#$%^&*()—\-=_+<>?\[\]{}\\|~`“”\n]+', i)
         output += puncs[0]
-        print(puncs[0]+word+puncs[-1])
+        print(puncs[0] + word + puncs[-1])
         for j in word:
             if j in ipa:
                 output += ipa[j]
@@ -47,6 +48,7 @@ def ipa_to_kerct(text):
                 output += j
         output += puncs[-1]
         output += " "
+    output = re.sub("․ ", ". ", output)
     return output
 
 
@@ -84,6 +86,8 @@ def eng_to_ipa(text):
     if len(text.split(" ")) > 20:
         return convert_to_ipa(text)
     '''
+    text = re.sub("-", ' ', text)
+    text = re.sub("—", " ", text)
     output = ""
     for i in text.split(" "):
         j = re.findall(r'[\w\'’]+', i)
@@ -94,7 +98,7 @@ def eng_to_ipa(text):
             continue
         puncs = re.split(r'[\w\'’]+', i)
         j = j.lower()
-        if j in eng2ipa_shortcut_dict and eng2ipa_shortcut_dict[j]!='':
+        if j in eng2ipa_shortcut_dict and eng2ipa_shortcut_dict[j] != '':
             output += puncs[0] + eng2ipa_shortcut_dict[j] + puncs[-1] + " "
             continue
         t = time.time()
@@ -103,8 +107,8 @@ def eng_to_ipa(text):
         print(t)
         print(word)
         if word == "":
-            k=convert_to_ipa(j)
-            if k!="" and k[0]!="_":
+            k = convert_to_ipa(j)
+            if k != "" and k[0] != "_":
                 eng2ipa_shortcut_dict[j] = k
                 output += puncs[0] + k + puncs[-1]
         else:
