@@ -1,13 +1,12 @@
-ei ctyūpid bot žät meikc kēcid fenëtik cpëliñ
+ëi styūpid bot žät mëiks kerst fenëtik spëliñ.
 
 _(A stupid bot that makes cursed phonetic spelling.)_
 
-# Usage
+# yūsij
 `pip install requirements.txt`
 `python main.py`
 
 ## tidū:
 
-- meik cëtiñz cēve indipëndent
-- faind ei fäcte wei ti dū lukepc žän wiksenrī
-- fikc baɡz in ai pī ei tränckripsen
+- mëik sëtiñz sēve indipëndent
+- fiks bagz in ai pī ëi tränskripšen
